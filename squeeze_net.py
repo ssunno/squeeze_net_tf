@@ -47,7 +47,7 @@ class SqueezeNet:
             net = layers.max_pool2d(net, [3, 3], scope='max_pool_3')
             net = self._fire_module(net, 64, 256, scope='fire_9')
             net = layers.dropout(net, self.dropout)
-            net = self.__conv2d(net, self.num_classes, [1, 1], scope='conv_10')  # TODO : conv_10 should be gaussian
+            net = self.__conv2d(net, self.num_classes, [1, 1], scope='conv_10')
             net = layers.avg_pool2d(net, [13, 13], stride=1, scope='avg_pool_1')
             return tf.squeeze(net, [2], name='logits')
 

@@ -3,4 +3,6 @@ SqueezeNet implementation using Tensorflow
 
 ***
 How to use:
+₩₩₩
     python3 train.py
+₩₩₩
