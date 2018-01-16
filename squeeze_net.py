@@ -11,7 +11,7 @@ class SqueezeNet:
         self.num_classes = num_classes
         self.normalize_decay = FLAGS.normalize_decay
         self.weight_decay = FLAGS.weight_decay
-        self.learning_rate = tf.placeholder(tf.float32)
+        self.learning_rate = tf.placeholder(tf.float32)  # TODO : add learning_rate decay code
         self.dropout = tf.placeholder(tf.float32)
         # batch data & labels
         self.train_data = tf.placeholder(tf.float32, shape=[None, img_shape[1], img_shape[2], img_shape[3]], name='train_data')
@@ -32,7 +32,7 @@ class SqueezeNet:
         grads, global_norm = tf.clip_by_global_norm(tf.gradients(self.loss, tvars), FLAGS.max_grad_norm)
         self.train_op = optimizer.apply_gradients(zip(grads, tvars), global_step=self.global_step)
 
-    def inference(self, scope='squeeze_net'):
+    def inference(self, scope='squeeze_net'):  # inference squeeze net
         with tf.variable_scope(scope):
             net = self.__conv2d(self.resized_data, 96, [3, 3], stride=2, scope='conv_1')
             net = layers.max_pool2d(net, [3, 3], scope='max_pool_1')
@@ -47,7 +47,7 @@ class SqueezeNet:
             net = layers.max_pool2d(net, [3, 3], scope='max_pool_3')
             net = self._fire_module(net, 64, 256, scope='fire_9')
             net = layers.dropout(net, self.dropout)
-            net = self.__conv2d(net, self.num_classes, [1, 1], scope='conv_10')
+            net = self.__conv2d(net, self.num_classes, [1, 1], scope='conv_10')  # TODO : conv_10 should be gaussian
             net = layers.avg_pool2d(net, [13, 13], stride=1, scope='avg_pool_1')
             return tf.squeeze(net, [2], name='logits')
 

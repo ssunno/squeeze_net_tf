@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# TODO: 파라미터, 데이터 로드, 모델 초기화, 트레이닝, 결과 기록 코드 구현
-
 import tensorflow as tf
 import time
 from data_reader import BatchSet, load_cifar10
@@ -11,7 +9,8 @@ flags = tf.flags
 flags.DEFINE_integer('batch_size', 10, 'batch size')
 flags.DEFINE_integer('num_epochs', 50, 'number of epochs')
 flags.DEFINE_float('learning_rate', 0.04, 'init learning rate')
-flags.DEFINE_float('max_grad_norm', 5.0, '')
+flags.DEFINE_float('dropout', 0.5, 'define dropout keep probability')
+flags.DEFINE_float('max_grad_norm', 5.0, 'define maximum gradient normalize value')
 flags.DEFINE_float('normalize_decay', 5.0, '')
 flags.DEFINE_float('weight_decay', 0.0002, '')
 
@@ -23,6 +22,8 @@ FLAGS = flags.FLAGS
 def train():
     # initialize data reader
     batch_set = BatchSet(FLAGS.batch_size, load_cifar10)
+    print("Batch dataset initialized.\n# of training data: {}\n# of test data: {}]\n# of class: {}"
+          .format(len(batch_set.data_train[0]), len(batch_set.data_test[0]), batch_set.num_classes))
     # initialize squeeze net model
     squeeze_net = SqueezeNet(batch_set.image_shape, batch_set.num_classes)
     with tf.Session() as sess:
@@ -32,7 +33,8 @@ def train():
             # training step
             for x_batch, y_batch in batch_set.batches():
                 start = time.time()
-                feed = {squeeze_net.train_data: x_batch, squeeze_net.targets: y_batch, squeeze_net.learning_rate: FLAGS.learning_rate}
+                feed = {squeeze_net.train_data: x_batch, squeeze_net.targets: y_batch,
+                        squeeze_net.learning_rate: FLAGS.learning_rate, squeeze_net.dropout: FLAGS.dropout}
                 _, global_step, loss, accuracy = sess.run([squeeze_net.train_op, squeeze_net.global_step,
                                                            squeeze_net.loss, squeeze_net.accuracy], feed_dict=feed)
                 if global_step % FLAGS.print_every == 0:
@@ -43,7 +45,7 @@ def train():
             start, avg_loss, avg_accuracy = time.time(), 0, 0
             for x_test, y_test in batch_set.test_batches():
                 feed = {squeeze_net.train_data: x_test, squeeze_net.targets: y_test,
-                        squeeze_net.learning_rate: FLAGS.learning_rate}
+                        squeeze_net.learning_rate: FLAGS.learning_rate, squeeze_net.dropout: 1.0}
                 loss, accuracy = sess.run([squeeze_net.loss, squeeze_net.accuracy], feed_dict=feed)
                 avg_loss += loss * len(x_test)
                 avg_accuracy += accuracy * len(x_test)
