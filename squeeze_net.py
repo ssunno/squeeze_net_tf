@@ -11,7 +11,7 @@ class SqueezeNet:
         self.num_classes = num_classes
         self.normalize_decay = FLAGS.normalize_decay
         self.weight_decay = FLAGS.weight_decay
-        self.learning_rate = tf.placeholder(tf.float32)  # TODO : add learning_rate decay code
+        self.learning_rate = tf.placeholder(tf.float32)
         self.dropout = tf.placeholder(tf.float32)
         # batch data & labels
         self.train_data = tf.placeholder(tf.float32, shape=[None, img_shape[1], img_shape[2], img_shape[3]], name='train_data')

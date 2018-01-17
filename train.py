@@ -7,8 +7,8 @@ from squeeze_net import SqueezeNet
 
 flags = tf.flags
 flags.DEFINE_integer('batch_size', 100, 'batch size')
-flags.DEFINE_integer('num_epochs', 50, 'number of epochs')
-flags.DEFINE_float('learning_rate', 0.04, 'init learning rate')  # TODO : add lr decay code
+flags.DEFINE_integer('num_epochs', 35, 'number of epochs')
+flags.DEFINE_float('learning_rate', 0.04, 'init learning rate')
 flags.DEFINE_float('dropout', 0.5, 'define dropout keep probability')
 flags.DEFINE_float('max_grad_norm', 5.0, 'define maximum gradient normalize value')
 flags.DEFINE_float('normalize_decay', 5.0, 'batch normalize decay rate')
