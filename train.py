@@ -35,7 +35,7 @@ def train():
         test_summary = tf.summary.merge([tf.summary.scalar("loss", squeeze_net.loss),
                                          tf.summary.scalar("accuracy", squeeze_net.accuracy)])
         if FLAGS.name is None:
-            FLAGS.name = time.time() % 1000
+            FLAGS.name = str(time.time() % 1000)
         summary_writer = tf.summary.FileWriter("./result/" + FLAGS.name, sess.graph)
 
         for current_epoch in range(FLAGS.num_epochs):

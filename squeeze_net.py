@@ -16,7 +16,7 @@ class SqueezeNet:
         # batch data & labels
         self.train_data = tf.placeholder(tf.float32, shape=[None, img_shape[1], img_shape[2], img_shape[3]], name='train_data')
         # resize train image for squeeze net
-        self.resized_data = tf.image.resize_bilinear(self.train_data, [227, 227])
+        self.resized_data = self.train_data
         self.targets = tf.placeholder(tf.int32, shape=[None, 1], name='targets')
 
         logits = self.inference()
@@ -34,7 +34,7 @@ class SqueezeNet:
 
     def inference(self, scope='squeeze_net'):  # inference squeeze net
         with tf.variable_scope(scope):
-            net = self.__conv2d(self.resized_data, 96, [3, 3], stride=2, scope='conv_1')
+            net = self.__conv2d(self.resized_data, 96, [3, 3], scope='conv_1')
             net = layers.max_pool2d(net, [3, 3], scope='max_pool_1')
             net = self._fire_module(net, 16, 64, scope='fire_2')
             net = self._fire_module(net, 16, 64, scope='fire_3')
@@ -48,7 +48,7 @@ class SqueezeNet:
             net = self._fire_module(net, 64, 256, scope='fire_9')
             net = layers.dropout(net, self.dropout)
             net = self.__conv2d(net, self.num_classes, [1, 1], scope='conv_10')
-            net = layers.avg_pool2d(net, [13, 13], stride=1, scope='avg_pool_1')
+            net = layers.avg_pool2d(net, [3, 3], stride=1, scope='avg_pool_1')
             return tf.squeeze(net, [2], name='logits')
 
     def _fire_module(self, input_tensor, squeeze_depth, expand_depth, scope=None):
