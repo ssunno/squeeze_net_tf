@@ -1,6 +1,8 @@
 # squeeze_net_tf
 SqueezeNet implementation using Tensorflow.
+
 paper: https://arxiv.org/pdf/1602.07360.pdf
+
 Note: original paper using ImageNet dataset but i'm using CIFAR-10
 
 
