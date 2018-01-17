@@ -22,8 +22,8 @@ class SqueezeNet:
         logits = self.inference()
 
         self.loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=self.targets, logits=logits), name='loss')
-        predictions = tf.argmax(logits, 1)
-        correct_prediction = tf.equal(tf.cast(predictions, dtype=tf.int32), self.targets)
+        predictions = tf.argmax(tf.squeeze(logits, [1]), 1)
+        correct_prediction = tf.equal(tf.cast(predictions, dtype=tf.int32), tf.squeeze(self.targets, [1]))
         self.accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
         optimizer = tf.train.AdamOptimizer(self.learning_rate)
